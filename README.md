@@ -19,5 +19,5 @@ npm start
 echo PROXY_URL=http://blablabla > .env
 ```
 ### Other environment vars
-- PORT - by default is http://localhost:3000)
-- ORIGIN - by default is 8080
+- PORT - by default is 8080
+- ORIGIN - by default is http://localhost:3000
