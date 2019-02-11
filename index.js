@@ -1,9 +1,10 @@
 const Express = require('express');
 const proxy = require('express-http-proxy');
 const cors = require('cors');
-const app = new Express();
 
+const app = new Express();
 const origin = 'http://localhost:3000';
+const listeningPort = 3006;
 
 app.use('*', cors({ origin, credentials: true }));
 app.use('/', proxy('http://localhost:8080', {
@@ -12,4 +13,5 @@ app.use('/', proxy('http://localhost:8080', {
     return headers;
   }
 }));
-app.listen(3006, () => console.log(`EXPRESS Server listening on 3006`));
+app.listen(listeningPort, () => console.log(`EXPRESS Server listening on ${listeningPort}`));
+
