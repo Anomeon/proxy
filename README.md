@@ -12,12 +12,14 @@ npm start
 
 ## Env setup
 
+```bash
+cp .env.default .env
+```
+
 ### Required environment vars
 - PROXY_URL - url which you wanna proxying
+- COOKIE_DOMAIN - domain which will use in cookies
 
-```bash
-echo PROXY_URL=http://blablabla > .env
-```
 ### Other environment vars
 - PORT - by default is 8080
 - ORIGIN - by default is http://localhost:3000
