@@ -33,6 +33,7 @@ app.use('/', proxy(
     return currentProxyUrl;
   },
   {
+    https: true,
     userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
       headers['access-control-allow-origin'] = ORIGIN;
       if (headers["set-cookie"]) {
