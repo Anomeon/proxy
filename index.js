@@ -42,8 +42,8 @@ app.use('/', proxy(
     https: HTTPS,
     proxyReqPathResolver: (req) => {
       const [path, query] = req.url.split('?');
-      const updatedPath = PATH_REPLACE_RULES.reduce((acc, { origin, replaced }) => {
-        return acc.replace(origin, replaced);
+      const updatedPath = PATH_REPLACE_RULES.reduce((acc, { pattern, replacement }) => {
+        return acc.replace(pattern, replacement);
       }, path);
       const queryString = query ? `?${query}` : '';
 
