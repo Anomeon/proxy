@@ -18,6 +18,10 @@ const EXTRA_PROXY_MAPPING_RULES = process.env.EXTRA_PROXY_MAPPING_RULES
   ? JSON.parse(process.env.EXTRA_PROXY_MAPPING_RULES)
   : [];
 
+const PATH_REPLACE_RULES = process.env.PATH_REPLACE_RULES
+  ? JSON.parse(process.env.PATH_REPLACE_RULES)
+  : [];
+
 const HTTPS = JSON.parse(process.env.HTTPS);
 
 app.use('*', cors({ origin: ORIGIN, credentials: true }));
@@ -36,6 +40,15 @@ app.use('/', proxy(
   },
   {
     https: HTTPS,
+    proxyReqPathResolver: (req) => {
+      const [path, query] = req.url.split('?');
+      const updatedPath = PATH_REPLACE_RULES.reduce((acc, { pattern, replacement }) => {
+        return acc.replace(pattern, replacement);
+      }, path);
+      const queryString = query ? `?${query}` : '';
+
+      return `${updatedPath}${queryString}`;
+    },
     userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
       headers['access-control-allow-origin'] = ORIGIN;
       if (headers["set-cookie"]) {
