@@ -1,29 +1,43 @@
-require('dotenv').load();
+const dotenv = require('dotenv');
 const Express = require('express');
 const proxy = require('express-http-proxy');
 const cors = require('cors');
+const path= require('path');
 const app = new Express();
 
-const DEFAULT_ORIGIN = 'http://localhost:3000';
-const DEFAULT_PORT = '8080';
 
+const DEFAULT_ENV_FILE = '.env';
+
+// Helpers
+const getEnvFile = () => {
+	const envFileArgIndex = process.argv.indexOf('--env-file');
+	if (envFileArgIndex > -1) {
+	  const envFileIndex = envFileArgIndex + 1;
+	  const envFile = process.argv[envFileIndex];
+	  return envFile;
+	}
+	return DEFAULT_ENV_FILE;
+};
+
+
+// Load env file
+dotenv.load({ path: path.resolve(process.cwd(), getEnvFile()) });
+
+
+// Setup
 const {
-    PORT = DEFAULT_PORT,
+    PORT,
     PROXY_URL,
     COOKIE_DOMAIN,
-    ORIGIN = DEFAULT_ORIGIN,
+    ORIGIN,
 } = process.env;
 
-const EXTRA_PROXY_MAPPING_RULES = process.env.EXTRA_PROXY_MAPPING_RULES
-  ? JSON.parse(process.env.EXTRA_PROXY_MAPPING_RULES)
-  : [];
-
-const PATH_REPLACE_RULES = process.env.PATH_REPLACE_RULES
-  ? JSON.parse(process.env.PATH_REPLACE_RULES)
-  : [];
-
+const EXTRA_PROXY_MAPPING_RULES = JSON.parse(process.env.EXTRA_PROXY_MAPPING_RULES);
+const PATH_REPLACE_RULES = JSON.parse(process.env.PATH_REPLACE_RULES);
 const HTTPS = JSON.parse(process.env.HTTPS);
 
+
+// Init
 app.use('*', cors({ origin: ORIGIN, credentials: true }));
 
 app.use('/', proxy(
@@ -58,4 +72,5 @@ app.use('/', proxy(
     },
   }
 ));
+
 app.listen(PORT, () => console.log(`Proxying ${PROXY_URL} to localhost:${PORT} with origin ${ORIGIN}`));
