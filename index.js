@@ -54,6 +54,7 @@ app.use('/', proxy(
   },
   {
     https: HTTPS,
+    limit: '20mb',
     proxyReqPathResolver: (req) => {
       const [path, query] = req.url.split('?');
       const updatedPath = PATH_REPLACE_RULES.reduce((acc, { pattern, replacement }) => {
